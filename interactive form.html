@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Interactive Form</title>
+
+<style>
+body{
+  font-family: Arial;
+}
+
+.error{
+  color: red;
+}
+
+.success{
+  color: green;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>Student Registration Form</h2>
+
+<form id="myForm">
+
+Name: <br>
+<input type="text" id="name">
+<p id="nameError" class="error"></p>
+
+Email: <br>
+<input type="text" id="email">
+<p id="emailError" class="error"></p>
+
+Password: <br>
+<input type="password" id="password">
+<p id="passwordError" class="error"></p>
+
+<br>
+<button type="submit">Submit</button>
+
+<p id="successMessage" class="success"></p>
+
+</form>
+
+<script>
+
+document.getElementById("myForm").addEventListener("submit", function(event){
+
+event.preventDefault();
+
+let name = document.getElementById("name").value;
+let email = document.getElementById("email").value;
+let password = document.getElementById("password").value;
+
+let valid = true;
+
+// Name validation
+if(name === ""){
+document.getElementById("nameError").innerText = "Name is required";
+valid = false;
+}else{
+document.getElementById("nameError").innerText = "";
+}
+
+// Email validation
+if(!email.includes("@")){
+document.getElementById("emailError").innerText = "Enter valid email";
+valid = false;
+}else{
+document.getElementById("emailError").innerText = "";
+}
+
+// Password validation
+if(password.length < 6){
+document.getElementById("passwordError").innerText = "Password must be 6 characters";
+valid = false;
+}else{
+document.getElementById("passwordError").innerText = "";
+}
+
+// Success message
+if(valid){
+document.getElementById("successMessage").innerText = "Form submitted successfully!";
+}
+
+});
+
+</script>
+
+</body>
+</html>

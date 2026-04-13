@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mood Tracker</title>
+
+  <!-- React CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <!-- Babel CDN -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+function App() {
+
+  const [mood, setMood] = React.useState("🙂");
+
+  return (
+    <div style={{ textAlign: "center", marginTop: "50px", fontFamily: "Arial" }}>
+
+      <h1>Mood Tracker</h1>
+
+      <h2>Your Mood: {mood}</h2>
+
+      <div style={{ marginTop: "20px" }}>
+
+        <button onClick={() => setMood("😀")} style={{ margin: "5px", padding: "10px" }}>
+          Happy
+        </button>
+
+        <button onClick={() => setMood("😐")} style={{ margin: "5px", padding: "10px" }}>
+          Neutral
+        </button>
+
+        <button onClick={() => setMood("😢")} style={{ margin: "5px", padding: "10px" }}>
+          Sad
+        </button>
+
+        <button onClick={() => setMood("😡")} style={{ margin: "5px", padding: "10px" }}>
+          Angry
+        </button>
+
+      </div>
+
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+
+</script>
+
+</body>
+</html>

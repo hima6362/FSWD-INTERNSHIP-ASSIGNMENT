@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // Array to store students
+let students = [
+  {
+    name: "Rahul",
+    marks: [80, 75, 90]
+  },
+  {
+    name: "Priya",
+    marks: [70, 85, 88]
+  },
+  {
+    name: "Arjun",
+    marks: [60, 65, 70]
+  }
+];
+
+// Loop through students
+students.forEach(function(student) {
+
+  let total = 0;
+
+  // Calculate total marks
+  student.marks.forEach(function(mark) {
+    total += mark;
+  });
+
+  // Calculate average
+  let average = total / student.marks.length;
+
+  // Print result
+  console.log("Student Name:", student.name);
+  console.log("Marks:", student.marks);
+  console.log("Average:", average);
+  console.log("---------------------");
+
+});
+    </script>
+</body>
+</html>
