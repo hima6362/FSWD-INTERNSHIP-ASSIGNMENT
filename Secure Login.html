@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Secure Login System</title>
+
+    <!-- CryptoJS for hashing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+    <style>
+        body { font-family: Arial; text-align: center; }
+        .hidden { display: none; }
+        input, button { padding: 10px; margin: 5px; }
+    </style>
+</head>
+<body>
+
+<h1>🔐 Secure Login (JWT + Hash)</h1>
+
+<!-- Signup -->
+<div id="signupPage">
+    <h2>Signup</h2>
+    <input id="signupUser" placeholder="Username"><br>
+    <input id="signupPass" type="password" placeholder="Password"><br>
+    <button onclick="signup()">Signup</button>
+    <p>Already have an account? <button onclick="showPage('loginPage')">Login</button></p>
+</div>
+
+<!-- Login -->
+<div id="loginPage" class="hidden">
+    <h2>Login</h2>
+    <input id="loginUser" placeholder="Username"><br>
+    <input id="loginPass" type="password" placeholder="Password"><br>
+    <button onclick="login()">Login</button>
+    <p>No account? <button onclick="showPage('signupPage')">Signup</button></p>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard" class="hidden">
+    <h2>Dashboard</h2>
+    <p id="welcome"></p>
+    <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+/* =========================
+   🔹 DATABASE (Simulated)
+========================= */
+let users = JSON.parse(localStorage.getItem("users")) || [];
+
+/* =========================
+   🔹 HASH FUNCTION
+========================= */
+function hashPassword(password) {
+    return CryptoJS.SHA256(password).toString();
+}
+
+/* =========================
+   🔹 JWT FUNCTIONS
+========================= */
+
+// Create fake JWT
+function generateToken(payload) {
+    const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
+    const body = btoa(JSON.stringify(payload));
+    const signature = btoa(header + "." + body + "secretKey");
+
+    return `${header}.${body}.${signature}`;
+}
+
+// Verify JWT
+function verifyToken(token) {
+    try {
+        const parts = token.split(".");
+        const payload = JSON.parse(atob(parts[1]));
+        return payload;
+    } catch {
+        return null;
+    }
+}
+
+/* =========================
+   🔹 AUTH FUNCTIONS
+========================= */
+
+// Signup
+function signup() {
+    const username = document.getElementById("signupUser").value;
+    const password = document.getElementById("signupPass").value;
+
+    if (!username || !password) return alert("Fill all fields");
+
+    const hashed = hashPassword(password);
+
+    users.push({ username, password: hashed });
+    localStorage.setItem("users", JSON.stringify(users));
+
+    alert("Signup successful!");
+    showPage("loginPage");
+}
+
+// Login
+function login() {
+    const username = document.getElementById("loginUser").value;
+    const password = document.getElementById("loginPass").value;
+
+    const hashed = hashPassword(password);
+
+    const user = users.find(u => u.username === username && u.password === hashed);
+
+    if (!user) return alert("Invalid credentials");
+
+    const token = generateToken({ username });
+    localStorage.setItem("token", token);
+
+    loadDashboard();
+}
+
+// Logout
+function logout() {
+    localStorage.removeItem("token");
+    showPage("loginPage");
+}
+
+/* =========================
+   🔹 PROTECTED ROUTE
+========================= */
+
+function loadDashboard() {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        alert("Unauthorized!");
+        showPage("loginPage");
+        return;
+    }
+
+    const data = verifyToken(token);
+
+    if (!data) {
+        alert("Invalid token!");
+        showPage("loginPage");
+        return;
+    }
+
+    document.getElementById("welcome").innerText =
+        "Welcome, " + data.username;
+
+    showPage("dashboard");
+}
+
+/* =========================
+   🔹 UI CONTROL
+========================= */
+
+function showPage(pageId) {
+    document.querySelectorAll("div").forEach(div => div.classList.add("hidden"));
+    document.getElementById(pageId).classList.remove("hidden");
+}
+
+/* =========================
+   🔹 AUTO LOGIN
+========================= */
+
+window.onload = function () {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+        loadDashboard();
+    } else {
+        showPage("signupPage");
+    }
+};
+</script>
+
+</body>
+</html>
